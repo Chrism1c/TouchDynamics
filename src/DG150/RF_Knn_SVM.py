@@ -11,6 +11,12 @@ import numpy as np
 from sklearn.metrics import roc_curve
 from sklearn.svm import OneClassSVM
 
+from src.EER import evaluateEER2
+from src.Mobilekey.RF_Knn_SVM import MobileKey_DBs, datasets_MobileKey
+from src.Mobilekey.mobilekey_management import Path_MobileKEY
+from src.functions import evaluate, randomforest, KNNx, conf_matrix
+from src.support import get_df_from_arff
+
 "Random Forest"
 
 DG150_DBs = ['Long_DG150', 'Short_DG150']

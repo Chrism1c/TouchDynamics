@@ -11,9 +11,10 @@ import numpy as np
 from sklearn.metrics import roc_curve
 from sklearn.svm import OneClassSVM
 
-from Mobilekey.EER import evaluateEER2
-from Mobilekey.functions import randomforest, KNNx, evaluate, conf_matrix
-from Mobilekey.mobilekey_management import get_df_from_arff
+from src.EER import evaluateEER2
+from src.functions import randomforest, KNNx, evaluate, conf_matrix
+from src.Mobilekey.mobilekey_management import get_df_from_arff
+
 
 def clean_dataset(df):
     assert isinstance(df, pd.DataFrame), "df needs to be a pd.DataFrame"

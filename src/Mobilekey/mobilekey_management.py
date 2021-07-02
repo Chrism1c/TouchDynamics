@@ -4,22 +4,9 @@ import pandas as pd
 import numpy as np
 import glob
 
+from src.support import get_df_from_arff
+
 Path_MobileKEY = 'D:\pycharmProjects\TouchDynamics\datasets\KeystrokeTouch\MobileKey'
-
-
-
-def get_df_from_arff(arff_path):
-    from scipy.io import arff
-    import pandas as pd
-    try:
-        data = arff.loadarff(arff_path)
-        df = pd.DataFrame(data[0])
-
-        # print(df.head())
-        return df
-    except:
-        print("Path is not valid")
-
 
 
 def load_data(index):

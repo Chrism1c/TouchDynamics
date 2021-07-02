@@ -9,7 +9,6 @@ logging.getLogger('tensorflow').setLevel(logging.FATAL)
 """/Suppress Tensorflow prints"""
 
 import pandas as pd
-from srcOLD import loader
 import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import normalize
@@ -20,6 +19,7 @@ from keras.callbacks import CSVLogger
 import seaborn as sn
 import matplotlib.pyplot as plt
 from collections import Counter
+from src.DG150.DG150_management import load_data
 
 
 def nn_model(input_dim, output_dim, nodes=40, dropout_rate=None):
@@ -42,7 +42,7 @@ def nn_model(input_dim, output_dim, nodes=40, dropout_rate=None):
 
 
 def calulate_model(key, clasx):
-    from DG150_management import load_data
+
 
     X, y = load_data(key)
     # print(y)

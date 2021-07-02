@@ -6,9 +6,10 @@ import numpy as np
 
 np.set_printoptions(suppress=True)
 import pandas as pd
-from EER import evaluateEER
+from src.EER import evaluateEER
 import warnings
-from Mobilekey.mobilekey_management import Path_MobileKEY, get_df_from_arff
+from src.Mobilekey.mobilekey_management import Path_MobileKEY
+from src.support import get_df_from_arff
 
 warnings.filterwarnings("ignore")
 from abc import ABCMeta, abstractmethod

@@ -10,10 +10,10 @@ from sklearn.model_selection import train_test_split
 import numpy as np
 from sklearn.metrics import roc_curve
 from sklearn.svm import OneClassSVM
-from Mobilekey import functions
-from Mobilekey.EER import evaluateEER, evaluateEER2
-from Mobilekey.functions import skf_, bestAVG_fScore, randomforest, conf_matrix, evaluate, KNNx
-from Mobilekey.mobilekey_management import Path_MobileKEY, get_df_from_arff
+from src.EER import evaluateEER, evaluateEER2
+from src.functions import skf_, bestAVG_fScore, randomforest, conf_matrix, evaluate, KNNx
+from src.Mobilekey.mobilekey_management import Path_MobileKEY
+from  src.support import get_df_from_arff
 
 "Random Forest"
 

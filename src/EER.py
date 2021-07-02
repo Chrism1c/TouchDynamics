@@ -35,6 +35,7 @@ def evaluateEER(user_scores, imposter_scores):
 
     return eer, roc_auc
 
+
 def evaluateEER2(Y_test_labels, test_prediction):
     fpr, tpr, threshold = roc_curve(Y_test_labels, test_prediction, pos_label=1)
     auc_keras = auc(fpr, tpr)

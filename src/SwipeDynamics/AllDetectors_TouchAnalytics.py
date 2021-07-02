@@ -2,7 +2,7 @@ from scipy.spatial.distance import cityblock, euclidean
 import numpy as np
 
 np.set_printoptions(suppress=True)
-from EER import evaluateEER
+from src.EER import evaluateEER
 import warnings
 
 warnings.filterwarnings("ignore")
