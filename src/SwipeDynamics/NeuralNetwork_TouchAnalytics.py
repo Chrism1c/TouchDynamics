@@ -58,9 +58,9 @@ def calulate_model(clasx, nodes, EPOCHS):
     # summarize class distribution
     # print(Counter(y))
     # define undersample strategy
-    undersample = RandomOverSampler(sampling_strategy='minority')
+    sample = RandomOverSampler(sampling_strategy='minority')
     # fit and apply the transform
-    X_over, y_over = undersample.fit_resample(data['total_dropped'], y)
+    X_over, y_over = sample.fit_resample(data['total_dropped'], y)
     # summarize class distribution
     # print(Counter(y_over))
 

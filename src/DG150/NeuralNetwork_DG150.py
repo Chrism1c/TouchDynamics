@@ -62,20 +62,24 @@ def calulate_model(index_dataset, clasx, EPOCHS, nodes):
 
     y = [0 if val == clasx else 1 for val in y]
 
-    # # OVERSAMPLING
-    # summarize class distribution
-    print(Counter(y))
-    sample = RandomOverSampler(sampling_strategy='minority')
-    # fit and apply the transform
-    X_over, y_over = sample.fit_resample(X, y)
-
-    # summarize class distribution
+    # # # OVERSAMPLING
+    # # summarize class distribution
+    # print(Counter(y))
+    # # sample = RandomOverSampler(sampling_strategy='minority')
+    # sample = RandomUnderSampler(sampling_strategy='majority')
+    # # fit and apply the transform
+    # X_over, y_over = sample.fit_resample(X, y)
+    #
+    # ## summarize class distribution
     # print(Counter(y_over))
+    #
+    # X = X_over
+    # Y = pd.get_dummies(y_over).values
+    # # print(X)
+    # # print(Y)
 
-    X = X_over
-    Y = pd.get_dummies(y_over).values
-    # print(X)
-    # print(Y)
+    # SENZA OVERSAMPLING
+    Y = pd.get_dummies(y).values
 
     n_classes = Y.shape[1]
     print('n_classes: ', n_classes)
@@ -148,8 +152,8 @@ def calulate_model(index_dataset, clasx, EPOCHS, nodes):
     # d = Counter(Y_test_labels)
     # print('--> Conuter Y_test_labels ', d)
 
-    # report = classification_report(Y_test_labels, test_prediction)
-    # print(report)
+    report = classification_report(Y_test_labels, test_prediction)
+    print(report)
 
     fpr, tpr, threshold = roc_curve(Y_test_labels, test_prediction, pos_label=1)
     auc_keras = auc(fpr, tpr)
@@ -177,9 +181,10 @@ if __name__ == '__main__':
 
     unique_subjects = np.unique(
         pd.read_pickle(Path_DG150_FE + '/' + "FE_dataset_pickle_" + datasets_DG150[0] + ".pkl")['user_id'].values.astype(int))
+
     unique_subjects = [0, 1]
 
-    EPOCHS = 100
+    EPOCHS = 2
     NODES = 300
     # clasx = 1
     # db = 0     # 0 - 5

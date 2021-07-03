@@ -68,9 +68,8 @@ if __name__ == '__main__':
         # summarize class distribution
         # print(Counter(y))
         # define undersample strategy
-        sample = RandomOverSampler(
-            sampling_strategy='minority')  # RandomUnderSampler(sampling_strategy='majority')
-        # sample = RandomOverSampler(sampling_strategy='minority')
+        sample = RandomOverSampler(sampling_strategy='minority')
+        # sample = RandomUnderSampler(sampling_strategy='majority')
 
         # fit and apply the transform
         X_over, y_over = sample.fit_resample(data.iloc[:, :-1], y)
