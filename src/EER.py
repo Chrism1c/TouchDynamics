@@ -4,8 +4,6 @@ from sklearn.metrics import roc_curve, auc, RocCurveDisplay
 import matplotlib.pyplot as plt
 import numpy as np
 
-from Mobilekey.NeuralNetwork import compute_eer
-
 
 def evaluateEER(user_scores, imposter_scores):
     labels = [0] * len(user_scores) + [1] * len(imposter_scores)
@@ -39,21 +37,30 @@ def evaluateEER(user_scores, imposter_scores):
 def evaluateEER2(Y_test_labels, test_prediction):
     fpr, tpr, threshold = roc_curve(Y_test_labels, test_prediction, pos_label=1)
     auc_keras = auc(fpr, tpr)
-    print('auc: ', auc_keras)
+    # print('auc: ', auc_keras)
     eer_point = compute_eer(fpr, tpr, threshold)
-    print('EER: ', eer_point[0])
+    # print('EER: ', eer_point[0])
 
-    plt.figure(1)
-    plt.plot([0, 1], [0, 1], 'k--')
-    plt.plot(fpr, tpr, label='NN (area = {:.3f})'.format(auc_keras))
+    # plt.figure(1)
+    # plt.plot([0, 1], [0, 1], 'k--')
+    # plt.plot(fpr, tpr, label='NN (area = {:.3f})'.format(auc_keras))
 
-    plt.xlabel('False positive rate')
-    plt.ylabel('True positive rate')
-    plt.title('ROC curve')
-    plt.legend(loc='best')
-    # plt.plot(tpr)
-    # plt.plot(1 - tpr)
-    # plt.scatter(eer_point[1], eer_point[0])
-    plt.show()
+    # plt.xlabel('False positive rate')
+    # plt.ylabel('True positive rate')
+    # plt.title('ROC curve')
+    # plt.legend(loc='best')
+    # # plt.plot(tpr)
+    # # plt.plot(1 - tpr)
+    # # plt.scatter(eer_point[1], eer_point[0])
+    # plt.show()
 
     return eer_point, auc_keras
+
+
+def compute_eer(fpr, tpr, thresholds):
+    """ Returns equal error rate (EER) and the corresponding threshold. """
+    fnr = 1 - tpr
+    abs_diffs = np.abs(fpr - fnr)
+    min_index = np.argmin(abs_diffs)
+    eer = np.mean((fpr[min_index], fnr[min_index]))
+    return eer, thresholds[min_index]

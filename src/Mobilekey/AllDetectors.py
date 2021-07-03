@@ -8,7 +8,7 @@ np.set_printoptions(suppress=True)
 import pandas as pd
 from src.EER import evaluateEER
 import warnings
-from src.Mobilekey.mobilekey_management import Path_MobileKEY
+from src.Mobilekey.MobiKey_management import Path_MobileKEY
 from src.support import get_df_from_arff
 
 warnings.filterwarnings("ignore")
@@ -173,31 +173,31 @@ if __name__ == '__main__':
 
     test_size = 0.2
 
-    # print("Results Manhattan detector:")
-    # # test_sizes = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
-    # # for test_size in test_sizes:
-    # # print("--> test_size: ", test_size)
-    # obj = ManhattanDetector(subjects, test_size)
-    # result = obj.evaluate()
-    # print('AVG(ERR): ', result[0],
-    #       '\nSTD(ERR): ', result[1],
-    #       '\nAVG(auc_roc): ', result[2],
-    #       '\nSTD(auc_roc): ', result[3])
-    #
-    # print("=====================================================================")
-    # print("Results Manhattan filtered detector:")
-    # obj = ManhattanFilteredDetector(subjects, test_size)
-    # result = obj.evaluate()
-    # print('AVG(ERR): ', result[0],
-    #       '\nSTD(ERR): ', result[1],
-    #       '\nAVG(auc_roc): ', result[2],
-    #       '\nSTD(auc_roc): ', result[3])
-    #
-    # print("=====================================================================")
-    # print("Results Manhattan scaled detector:")
-    # obj = ManhattanScaledDetector(subjects, test_size)
-    # result = obj.evaluate()
-    # print('AVG(ERR): ', result[0],
-    #       '\nSTD(ERR): ', result[1],
-    #       '\nAVG(auc_roc): ', result[2],
-    #       '\nSTD(auc_roc): ', result[3])
+    print("Results Manhattan detector:")
+    # test_sizes = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
+    # for test_size in test_sizes:
+    # print("--> test_size: ", test_size)
+    obj = ManhattanDetector(subjects, test_size)
+    result = obj.evaluate()
+    print('AVG(ERR): ', result[0],
+          '\nSTD(ERR): ', result[1],
+          '\nAVG(auc_roc): ', result[2],
+          '\nSTD(auc_roc): ', result[3])
+
+    print("=====================================================================")
+    print("Results Manhattan filtered detector:")
+    obj = ManhattanFilteredDetector(subjects, test_size)
+    result = obj.evaluate()
+    print('AVG(ERR): ', result[0],
+          '\nSTD(ERR): ', result[1],
+          '\nAVG(auc_roc): ', result[2],
+          '\nSTD(auc_roc): ', result[3])
+
+    print("=====================================================================")
+    print("Results Manhattan scaled detector:")
+    obj = ManhattanScaledDetector(subjects, test_size)
+    result = obj.evaluate()
+    print('AVG(ERR): ', result[0],
+          '\nSTD(ERR): ', result[1],
+          '\nAVG(auc_roc): ', result[2],
+          '\nSTD(auc_roc): ', result[3])
