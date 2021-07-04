@@ -11,7 +11,7 @@ Path_WekaArf_Results = 'D:\pycharmProjects\TouchDynamics\doc\Results\WekaArf_Res
 
 " ID utenti database"
 subjects = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 20, 21, 24, 25, 26, 27, 28, 29, 35, 36, 37, 38, 40, 41, 50, 51, 53, 54,
-            55, 65, 66, 68, 69, 70, 71, 73, 80, 81, 82, 83, 84, 85]
+            55, 65, 66, 68, 69, 70, 71, 73, 80, 81, 82, 83, 84, 85]  # 41
 
 
 def load_data(index):
@@ -28,8 +28,7 @@ def load_data(index):
 
 
 if __name__ == '__main__':
-
-    db_index = 0    # 0 - 4
+    db_index = 0  # 0 - 4
     data_X, data_Y = load_data(db_index)
 
     print(data_X.columns)

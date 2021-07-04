@@ -43,7 +43,7 @@ def nn_model(input_dim, output_dim, nodes=40, dropout_rate=None):
     return model
 
 
-def calulate_model(key, clasx, EPOCHS, nodes):
+def calulate_model(key, clasx, EPOCHS, nodes, Test_Size, Strategy):
     from WekaArf_management import load_data
 
     X, y = load_data(key)
@@ -62,19 +62,21 @@ def calulate_model(key, clasx, EPOCHS, nodes):
 
     # summarize class distribution
     print(Counter(y))
-    # define undersample strategy
-    undersample = RandomOverSampler(sampling_strategy='minority')
-    # fit and apply the transform
-    X_over, y_over = undersample.fit_resample(X, y)
+
+    # define  strategy
+    if Strategy == 'OverSampler':
+        sample = RandomOverSampler(sampling_strategy='minority')
+        X_over, y_over = sample.fit_resample(X, y)
+        X = X_over
+        Y = pd.get_dummies(y_over).values
+    elif Strategy == 'UnderSampler':
+        sample = RandomUnderSampler(sampling_strategy='majority')
+        X_over, y_over = sample.fit_resample(X, y)
+        X = X_over
+        Y = pd.get_dummies(y_over).values
+
     # summarize class distribution
     print(Counter(y_over))
-
-    X = X_over
-    # print(X)
-    print(X.shape)
-    Y = pd.get_dummies(y_over).values
-    # print(Y)
-    print(Y.shape)
 
     n_classes = Y.shape[1]
     print('n_classes: ', n_classes)
@@ -82,12 +84,12 @@ def calulate_model(key, clasx, EPOCHS, nodes):
     # nodes = 300
     # EPOCHS = 5
 
-    print('Running : ', db, clasx, key, nodes, X.shape)
+    print('Running : ', db, clasx, key, nodes, X.shape, Strategy)
 
     # np.argwhere(np.isnan(X))
 
     # Split data into training and testing data
-    X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2, random_state=1)
+    X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=Test_Size, random_state=1)
 
     # Normalize data with mean 0 and std 1
     X_scaled = normalize(X_train)
@@ -123,14 +125,14 @@ def calulate_model(key, clasx, EPOCHS, nodes):
 
     Y_test_labels = np.argmax(Y_test, axis=1)
 
-    cm = confusion_matrix(Y_test_labels, test_prediction)
-    # Normalise
-    cmn = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
-    fig, ax = plt.subplots(figsize=(5, 4))
-    sn.heatmap(cmn, annot=True, fmt='.2f')
-    plt.ylabel('Actual')
-    plt.xlabel('Predicted')
-    plt.show(block=False)
+    # cm = confusion_matrix(Y_test_labels, test_prediction)
+    # # Normalise
+    # cmn = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
+    # fig, ax = plt.subplots(figsize=(5, 4))
+    # sn.heatmap(cmn, annot=True, fmt='.2f')
+    # plt.ylabel('Actual')
+    # plt.xlabel('Predicted')
+    # plt.show(block=False)
 
     # dataCM = {'true_classes': Y_test_labels, 'predictions': test_prediction}
     # df_CM = pd.DataFrame(dataCM, columns=['true_classes', 'predictions'])
@@ -143,11 +145,11 @@ def calulate_model(key, clasx, EPOCHS, nodes):
     # print('test_prediction: ', test_prediction)
     # print('Y_test_labels: ', Y_test_labels)
 
-    d = Counter(test_prediction)
-    print('--> Conuter test_prediction ', d)
-
-    d = Counter(Y_test_labels)
-    print('--> Conuter Y_test_labels ', d)
+    # d = Counter(test_prediction)
+    # print('--> Conuter test_prediction ', d)
+    #
+    # d = Counter(Y_test_labels)
+    # print('--> Conuter Y_test_labels ', d)
 
     report = classification_report(Y_test_labels, test_prediction)
     print(report)
@@ -158,55 +160,50 @@ def calulate_model(key, clasx, EPOCHS, nodes):
     eer_point = compute_eer(fpr, tpr, threshold)
     print('EER: ', eer_point[0])
 
-    plt.figure(1)
-    plt.plot([0, 1], [0, 1], 'k--')
-    plt.plot(fpr, tpr, label='NN (area = {:.3f})'.format(auc_keras))
-
-    plt.xlabel('False positive rate')
-    plt.ylabel('True positive rate')
-    plt.title('ROC curve')
-    plt.legend(loc='best')
-    # plt.plot(tpr)
-    # plt.plot(1 - tpr)
-    # plt.scatter(eer_point[1], eer_point[0])
-    plt.show()
+    # plt.figure(1)
+    # plt.plot([0, 1], [0, 1], 'k--')
+    # plt.plot(fpr, tpr, label='NN (area = {:.3f})'.format(auc_keras))
+    #
+    # plt.xlabel('False positive rate')
+    # plt.ylabel('True positive rate')
+    # plt.title('ROC curve')
+    # plt.legend(loc='best')
+    # # plt.plot(tpr)
+    # # plt.plot(1 - tpr)
+    # # plt.scatter(eer_point[1], eer_point[0])
+    # plt.show()
 
     return eer_point[0], auc_keras
 
 
 if __name__ == '__main__':
 
-    WekaArff_DBs = ['D:\\pycharmProjects\\TouchDynamics\\datasets\\KeystrokeTouch\\WekaArf\\42_users_51 '
-                    'samples_user_17_features_sample.arff',
-                    'D:\\pycharmProjects\\TouchDynamics\\datasets\\KeystrokeTouch\\WekaArf\\42_users_51 '
-                    'samples_user_3_features_sample.arff',
-                    'D:\\pycharmProjects\\TouchDynamics\\datasets\\KeystrokeTouch\\WekaArf\\42_users_51 '
-                    'samples_user_71_features_sample.arff',
-                    'D:\\pycharmProjects\\TouchDynamics\\datasets\\KeystrokeTouch\\WekaArf'
-                    '\\42_users_51_inputPatterns_user_41_features_inputPattern.arff',
-                    'D:\\pycharmProjects\\TouchDynamics\\datasets\\KeystrokeTouch\\WekaArf'
-                    '\\42_users_51_inputPatterns_user_71_features_inputPattern.arff']
-
     WekaArff_DBs = os.listdir(Path_WekaArf)  # glob.glob(Path_WekaArf + '\*.arff')
 
     print(WekaArff_DBs)
 
-    subjects = [1, 2]
-
     EPOCHS = 10
     NODES = 300
+    Test_Size = 0.1
+    Strategy = 'OverSampler'  # 'UnderSampler'
     # clasx = 502
     # db = 0     # 0 - 5
 
-    results = pd.DataFrame(columns=['clase', 'eer', 'auc'])
+    results = pd.DataFrame(columns=['classe', 'eer', 'auc'])
 
     ix = 0
 
     for db in WekaArff_DBs:
         for clasx in subjects:
-            eer2, auc2 = calulate_model(ix, clasx, EPOCHS, NODES)
+            eer2, auc2 = calulate_model(ix, clasx, EPOCHS, NODES, Test_Size, Strategy)
             print(clasx, eer2, auc2)
             results.loc[clasx] = [clasx, eer2, auc2]
         ix = ix + 1
-        results.to_csv(Path_WekaArf_Results + '/' + db + "_NN" + ".csv")
+        results.loc['AVG'] = ['-->', results['eer'].mean(), results['auc'].mean()]
+        print("RESULTS AVG = ", results['eer'].mean(), results['auc'].mean())
+        results.to_csv(Path_WekaArf_Results + '/' + db + "_Results_" + Strategy + "_NN" + ".csv")
         results.drop(results.index, inplace=True)
+    print("-------------------------------")
+
+# CON --> OVERSAMPLING
+# 42_users_51 samples_user_17_features_sample.arff

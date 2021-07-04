@@ -8,7 +8,7 @@ from sklearn.metrics import balanced_accuracy_score
 from sklearn.metrics import confusion_matrix
 from sklearn.neighbors import KNeighborsClassifier as Knn
 from sklearn.decomposition import PCA
-from sklearn.model_selection import StratifiedKFold
+from sklearn.model_selection import StratifiedKFold, StratifiedShuffleSplit
 from sklearn.ensemble import RandomForestClassifier
 import matplotlib.pyplot as plt
 import seaborn as sn
@@ -117,22 +117,14 @@ def applyPca(X, pca, pcaIndex):
     return pcaData
 
 
-def skf_(Xdata, ydata, NFold):
-    """
-    Scrivere la funzione stratifiedKfold(Xdata,ydata,NFold) che determina lo stratified k-fold di un dataset composto dalla coppia (Xdata, ydata) dove Xdata è la proiezione del dataset rispetto alle variabili indipendenti e ydata è la proiezione del dataset rispetto alla label. Nfold denota il numero di fold. Restituire le NFold coppie che rappresentano training set e testing set definiti tramite k-fold validation
-    :param Xdata: Variabili indipendenti del dataset data
-    :param ydata: Variabile dipendente del dataset data
-    :param NFold: numero di folds utilizzati per la Stratified-CV
-    :return:
-    """
-    # seed = 8
-    # skf = StratifiedKFold(n_splits=NFold, shuffle=True, random_state=seed)
-    skf = StratifiedKFold(n_splits=NFold, shuffle=True)
+def sss_(Xdata, ydata, NFold, Test_Size):
+    # skf = StratifiedKFold(n_splits=NFold, shuffle=True)
+    sss = StratifiedShuffleSplit(n_splits=NFold, random_state=0, test_size=Test_Size)
     ListXTrain = list()
     ListXTest = list()
     ListYTrain = list()
     ListYTest = list()
-    for train_index, test_index in skf.split(Xdata, ydata):
+    for train_index, test_index in sss.split(Xdata, ydata):
         ListXTrain.append(Xdata.iloc[train_index])
         ListXTest.append(Xdata.iloc[test_index])
         ListYTrain.append(ydata.iloc[train_index])
