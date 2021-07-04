@@ -9,9 +9,11 @@ from sklearn.metrics import classification_report
 from sklearn.model_selection import train_test_split
 from imblearn.under_sampling import RandomUnderSampler
 from imblearn.over_sampling import RandomOverSampler
+from sklearn.svm import SVC
+
 from src.EER import evaluateEER2
 from src.SwipeDynamics.TouchAnalytics_management import PathFrank_Results
-from src.functions import randomforest, KNNx, evaluate, conf_matrix
+from src.functions import randomforest, KNNx, evaluate, conf_matrix, skf_, evaluateCV
 from src.support import clean_dataset, get_df_from_arff
 import numpy as np
 
@@ -23,11 +25,24 @@ if __name__ == '__main__':
 
     data = get_df_from_arff('D:\pycharmProjects\TouchDynamics\datasets\Swipes\Frank\data_arff\dataset.arff')
     data = clean_dataset(data)
+
+    # print(data.head())
+    data_Up = data.loc[data['up/down/left/rightflag'] == 1]
+    # print(data_Up['up/down/left/rightflag'].head())
+    data_Down = data.loc[data['up/down/left/rightflag'] == 2]
+    # print(data_Down['up/down/left/rightflag'].head())
+    data_Left = data.loc[data['up/down/left/rightflag'] == 3]
+    # print(data_Left['up/down/left/rightflag'].head())
+    data_Right = data.loc[data['up/down/left/rightflag'] == 4]
+    # print(data_Right['up/down/left/rightflag'].head())
+
+    data = data_Right  # data_Left   # data_Down  # data_Up
+
     subjects = data['subject'].values
     unique_subjects = np.unique(subjects)
-
     print(unique_subjects)
-    print(data.head())
+
+    # input()
 
     results = pd.DataFrame(columns=['rf_eer', 'knn_eer', 'svm_eer'])
 
@@ -42,8 +57,8 @@ if __name__ == '__main__':
         # print(Counter(y))
 
         # define undersample strategy
-        sample = RandomOverSampler(sampling_strategy='minority')
-        # sample = RandomUnderSampler(sampling_strategy='majority')
+        # sample = RandomOverSampler(sampling_strategy='minority')
+        sample = RandomUnderSampler(sampling_strategy='majority')
         # fit and apply the transform
         X_over, y_over = sample.fit_resample(
             data.drop(columns=['subject', 'docid', 'phoneid', 'changeoffingerorientation']), y)
@@ -65,21 +80,25 @@ if __name__ == '__main__':
         listBootstrap = [0.5, 0.6, 0.7, 0.8, 0.9]
         listRandomization = ["sqrt", "log2"]
         listN_estimators = [10, 20, 30]
-        kfolds = 5
-        n_neighbors = 3
-        # seed = 8
-
-        "Train Test split"
-        X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.3, random_state=1)
-
-        n_estimators = listN_estimators[0]
+        n_estimators = 100
         randomization = listRandomization[0]
         bootstrap = listBootstrap[0]
+        kfolds = 5
+        n_neighbors = 2
+        Test_size = 0.3
+        # seed = 8
+
+
+        "Train Test split"
+        X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=Test_size, random_state=1)
+
 
         "Addestramento classificatori"
         rf = randomforest(X, Y, n_estimators, randomization, bootstrap)
         neigh = KNNx(X, Y, n_neighbors)
         SVM = svm.LinearSVC(dual=False).fit(X, Y)
+        # SVM = SVC(kernel='rbf', probability=True, C=10, gamma='scale').fit(X, Y)
+
 
         "Predizioni dei classificatori sul TestSet"
         res_onTest_rf = rf.predict(X_test)
@@ -123,5 +142,25 @@ if __name__ == '__main__':
         # report = classification_report(Y_test, res_onTest_SVM)
         # print(report)
 
+    results.loc['AVG'] = [results['rf_eer'].mean(), results['knn_eer'].mean(), results['svm_eer'].mean()]
+    print("RESULTS AVG = ", results['rf_eer'].mean(), results['knn_eer'].mean(), results['svm_eer'].mean())
     results.to_csv(PathFrank_Results + '/' + "Swipes_Results_Shallow" + ".csv")
     results.drop(results.index, inplace=True)
+
+    # RESULTS AVG =  0.006309526721887615 0.19573906144750342 0.4501502874003291
+    # 0.63%    -    19.57%  -       45.01 %
+
+    # RESULTS UP AVG =  0.008286533816425119 0.24711742424242428 0.13242366163425948
+    # 0.82%  -      24.71%  -      13.24 %
+
+    # RESULTS DOWN AVG = 0.0067321162850251266 0.20451794561550554 0.2335641403392358
+    # 0.67 %     -  20.45%   -      23.35%
+
+    # RESULTS LEFT AVG = 0.008379879385835318 0.21343205564525444 0.18247202999148168
+    # 0.83%     -   21.3%   -       18.24%
+
+    # RESULTS RIGHT AVG = 0.005491827232935916 0.1966138984137996 0.21677706796445304
+    # 0.54%     -   19.66%  -       21.6%
+
+
+

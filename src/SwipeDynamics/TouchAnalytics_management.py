@@ -25,12 +25,26 @@ def generate_pickle(PathFrank, pickle_fileName):
 def load_data():
     data = pd.read_pickle(PathFrank + '/' + pickle_fileName)
 
-    clean_dataset(data)
+    data = clean_dataset(data)
+
+    # print(data.head())
+    data_Up = data.loc[data['up/down/left/right flag'] == 1]
+    # print(data_Up['up/down/left/rightflag'].head())
+    data_Down = data.loc[data['up/down/left/right flag'] == 2]
+    # print(data_Down['up/down/left/rightflag'].head())
+    data_Left = data.loc[data['up/down/left/right flag'] == 3]
+    # print(data_Left['up/down/left/rightflag'].head())
+    data_Right = data.loc[data['up/down/left/right flag'] == 4]
+    # print(data_Right['up/down/left/rightflag'].head())
+
+    data =  data_Down  # data_Up     # data_Right  # data_Left
 
     data_l = {}
     data_l['total'] = data.drop(columns=['doc id', 'phone id', 'change of finger orientation'])
     data_l['total_dropped'] = data.drop(columns=['user id', 'doc id', 'phone id', 'change of finger orientation'])
     data_l['user id'] = data['user id']
+
+
 
     return data_l, data['user id'].values
 

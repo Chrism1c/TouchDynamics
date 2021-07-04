@@ -220,7 +220,7 @@ def test_single_model(clasx):
 if __name__ == '__main__':
     "FUNZIONA"
 
-    EPOCHS = 1
+    EPOCHS = 10
     NODES = 300
 
     # clasx = 502
@@ -238,9 +238,17 @@ if __name__ == '__main__':
         eer2, auc2 = test_single_model(clasx)
         print(clasx, eer2, auc2)
         results.loc[clasx] = [clasx, eer2, auc2]
+    results.loc['AVG'] = [clasx, results['eer'].mean(), results['auc'].mean()]
+    print("RESULTS AVG = ", 'Results ', results['eer'].mean(), results['auc'].mean())
     results.to_csv(PathFrank_Results + '/' + "Swipes_Results_NN" + ".csv")
 
     # # Test Dataframe --> CSV
     # results = pd.DataFrame(columns=['A', 'B', 'C'])
     # results.loc[0] = [1, 5, 6]
     # results.to_csv(PathFrank_Results + '/' + "Swipes_Results" + ".csv")
+
+
+    #  RESULTS AVG UP  =  0.09626951926074578       0.9037304807392542
+    #  RESULTS AVG DOWN  =
+    #  RESULTS AVG LEFT  =
+    #  RESULTS AVG RIGHT  =
