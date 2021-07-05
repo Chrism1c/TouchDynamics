@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+from sklearn import svm
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import precision_score
 from sklearn.metrics import recall_score
@@ -12,6 +13,8 @@ from sklearn.model_selection import StratifiedKFold, StratifiedShuffleSplit
 from sklearn.ensemble import RandomForestClassifier
 import matplotlib.pyplot as plt
 import seaborn as sn
+
+from src.EER import evaluateEER2
 
 
 def loadData(path):
@@ -213,6 +216,40 @@ def evaluateCV(folds, ListXTrain, ListXTest, ListyTrain, ListyTest, n_estimators
     return avgTrain, avgTest
 
 
+def evaluateCV_3Classifiers(folds, ListXTrain, ListXTest, ListyTrain, ListyTest, n_estimators=100, randomization="sqrt",
+                            bootstrap=0.5, n_neighbors=3):
+    avgTest = [0.0, 0.0, 0.0]
+
+    for i in range(folds):
+        "Addestramento classificatori"
+        rf = randomforest(ListXTrain[i], ListyTrain[i], n_estimators, randomization, bootstrap)
+        neigh = KNNx(ListXTrain[i], ListyTrain[i], n_neighbors)
+
+        SVM = svm.LinearSVC(dual=False).fit(ListXTrain[i], ListyTrain[i])         # Normalmente
+        # SVM = svm.SVC(C=10.55, gamma=1.86).fit(ListXTrain[i], ListyTrain[i])      # Per il 41 Features
+        # SVM = svm.SVC(C=7.46, gamma=0.25).fit(ListXTrain[i], ListyTrain[i])       # Per il 71 Features
+
+        "EER"
+        rf_eer, rf_roc_auc = evaluateEER2(ListyTest[i], rf.predict(ListXTest[i]))
+        # print("Rf eer_threshold: ", rf_eer)
+        knn_eer, knn_roc_auc = evaluateEER2(ListyTest[i], neigh.predict(ListXTest[i]))
+        # print("knn eer_threshold: ", knn_eer)
+        svm_eer, svmroc_auc = evaluateEER2(ListyTest[i], SVM.predict(ListXTest[i]))
+        # print("svm eer_threshold: ", svm_eer)
+
+        avgTest[0] += rf_eer[0]
+        avgTest[1] += knn_eer[0]
+        avgTest[2] += svm_eer[0]
+
+        # print(avgTest)
+        # print(i)
+
+    for j in range(0, len(avgTest)):
+        avgTest[j] = avgTest[j] / folds
+
+    return avgTest
+
+
 def applyPCAtoDataset(Lista, NPC):
     """
     Procedura che applica la PCA alla lista di folds (ES: ListXTrain / ListXTest)
@@ -283,6 +320,45 @@ def conf_matrix(labels, predictions):
     plt.show()
 
 
+def confusion_matrix_NN(Y_test_labels, test_prediction):
+    """
+    Genera e stampa a video la matrice di confusione
+    :param labels: variabile dipendente del dataset
+    :param predictions: predizioni del classificatore della variabile dipendente
+    :return: NULL
+    """
+    from sklearn.metrics import confusion_matrix
+    cm = confusion_matrix(Y_test_labels, test_prediction)
+    # Normalise
+    cmn = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
+    fig, ax = plt.subplots(figsize=(5, 4))
+    sn.heatmap(cmn, annot=True, fmt='.2f')
+    plt.ylabel('Actual')
+    plt.xlabel('Predicted')
+    plt.show(block=False)
+
+    dataCM = {'true_classes': Y_test_labels, 'predictions': test_prediction}
+    df_CM = pd.DataFrame(dataCM, columns=['true_classes', 'predictions'])
+    confusion_matrix = pd.crosstab(df_CM['true_classes'], df_CM['predictions'], rownames=['true_classes'],
+                                   colnames=['predictions'])
+    plt.figure(figsize=(10, 10))
+    sn.heatmap(confusion_matrix, linewidths=.5, annot=True)
+    plt.show()
+
+
+def roc_curve_plot(fpr, tpr, auc_keras):
+    plt.figure(1)
+    plt.plot([0, 1], [0, 1], 'k--')
+    plt.plot(fpr, tpr, label='NN (area = {:.3f})'.format(auc_keras))
+
+    plt.xlabel('False positive rate')
+    plt.ylabel('True positive rate')
+    plt.title('ROC curve')
+    plt.legend(loc='best')
+    # plt.plot(tpr)
+    # plt.plot(1 - tpr)
+    # plt.scatter(eer_point[1], eer_point[0])
+    plt.show()
 
 # RESULT OLD
 # [0.9015, 0.8175, 0.9223359422034919, 0.9575, 0.9395890831033425]

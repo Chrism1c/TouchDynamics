@@ -1,97 +1,46 @@
-import glob
-from collections import Counter
-
-import matplotlib.pyplot as plt
-from scipy.io import arff
-import pandas as pd
-from sklearn import svm
-from sklearn.metrics import confusion_matrix, classification_report
-from sklearn.model_selection import train_test_split
-from src.EER import evaluateEER, evaluateEER2
-from src.functions import randomforest, conf_matrix, evaluate, KNNx, sss_
-from src.WekaArf.WekaArf_management import Path_WekaArf, Path_WekaArf_Results, subjects
-from src.support import get_df_from_arff, evaluateCV_3Classifiers
-from imblearn.under_sampling import RandomUnderSampler
-from imblearn.over_sampling import RandomOverSampler
 import os
+import pandas as pd
 
-# index = 0
-# clasx = 600
-
+from src.WekaArff.WekaArf_management import Path_WekaArff, load_data, subjects, Path_WekaArff_Results
+from src.core.RF_Knn_SVM import RF_kNN_SVM, listBootstrap, listRandomization, listN_estimators
 
 if __name__ == '__main__':
 
-    datasets_WekaArf = os.listdir(Path_WekaArf)
+    datasets_WekaArf = os.listdir(Path_WekaArff)
     print(datasets_WekaArf)
 
-    "ID DEL DATASET DA UTILIZZARE"
-    id_database_WekaArff = 4  # #   0-1-2       3-4
+    "Parametri Dataset"
+    indice_database_WekaArff = 4  # #  0-1-2  |   3-4
+    db_name = datasets_WekaArf[indice_database_WekaArff]
+
     Test_Size = 0.1
 
-    " Parametri classificatori "
-    listBootstrap = [0.5, 0.6, 0.7, 0.8, 0.9]
-    listRandomization = ["sqrt", "log2"]
-    listN_estimators = [10, 20, 30]
+    "Parametri Generali "
     NFold = 10
+    Strategy = 'OverSampler'  # 'UnderSampler'
+
+    "Knn"
     n_neighbors = 3
 
-    n_estimators = 100
+    "Random Forest"
+    n_estimators = listN_estimators[3]
     randomization = listRandomization[0]
     bootstrap = listBootstrap[0]
 
     results = pd.DataFrame(columns=['rf_eer', 'knn_eer', 'svm_eer'])
 
-    db = datasets_WekaArf[id_database_WekaArff]
     for clasx in subjects:
-        data = get_df_from_arff(Path_WekaArf + '/' + db)
-
-        print("----> Clasx: ", clasx, " dataset: ", db)
-
-        data['user_id'] = pd.to_numeric(data['user_id'])
-        subjects = data['user_id'].values
+        X, subjects = load_data(indice_database_WekaArff)
         # print(data)
-        # print(data.head())
 
-        # Binarizzazione del dataset
-        y = [0 if val == clasx else 1 for val in subjects]
+        avgTest_result = RF_kNN_SVM(X.drop(columns=['user_id']), subjects, db_name, clasx, Strategy, NFold, Test_Size,
+                                    n_estimators, randomization, bootstrap, n_neighbors)
 
-        ### OVERSAMPLIG classe Minoritaria / DOWNSAMPLING classe Maggioritaria
-
-        # summarize class distribution
-        # print(Counter(y))
-
-        sample = RandomOverSampler(sampling_strategy='minority')
-        # sample = RandomUnderSampler(sampling_strategy='majority')
-
-        # fit and apply the transform
-        X_over, y_over = sample.fit_resample(data.iloc[:, :-1], y)
-
-        # summarize class distribution
-        # print(Counter(y_over))
-
-        X = X_over
-        Y = y_over
-
-        # ## SENZA NULLA
-        # X = data.iloc[:, :-1]
-        # Y = y
-
-        # print(Counter(Y))
-
-        "Cross Validation"
-        ListXTrain, ListXTest, ListYTrain, ListYTest = sss_(X, pd.Series(Y), NFold, Test_Size)
-
-        avgTest = evaluateCV_3Classifiers(NFold, ListXTrain, ListXTest, ListYTrain, ListYTest,
-                                          n_estimators=n_estimators,
-                                          randomization=randomization,
-                                          bootstrap=bootstrap, n_neighbors=n_neighbors)
-
-        print("Results 10-FoldCV : ", avgTest)
-        results.loc[clasx] = [avgTest[0], avgTest[1], avgTest[2]]
+        results.loc[clasx] = [avgTest_result[0], avgTest_result[1], avgTest_result[2]]
 
     results.loc['AVG'] = [results['rf_eer'].mean(), results['knn_eer'].mean(), results['svm_eer'].mean()]
     print("RESULTS AVG = ", results['rf_eer'].mean(), results['knn_eer'].mean(), results['svm_eer'].mean())
-    results.to_csv(Path_WekaArf_Results + '/' + db.replace('.arff', '_Results_Shellow') + ".csv")
+    results.to_csv(Path_WekaArff_Results + '/' + db_name.replace('.arff', '_Results_Shellow') + ".csv")
 
 #      CON --> OVERSAMPLING
 # RESULTS AVG: 42_users_51 samples_user_71_features_sample.arff  =
@@ -136,4 +85,3 @@ if __name__ == '__main__':
 #   =  0.044285714285714275 0.231468253968254 0.19603174603174603
 # RESULTS AVG: 42_users_51_inputPatterns_user_71_features_inputPattern.arff
 #   =  0.06936507936507935 0.2224206349206349 0.19555555555555557
-

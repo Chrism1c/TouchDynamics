@@ -8,7 +8,7 @@ np.set_printoptions(suppress=True)
 import pandas as pd
 from src.EER import evaluateEER
 import warnings
-from src.Mobilekey.MobiKey_management import Path_MobileKEY
+from src.Mobikey.MobiKey_management import Path_MobileKEY
 from src.support import get_df_from_arff
 
 warnings.filterwarnings("ignore")
