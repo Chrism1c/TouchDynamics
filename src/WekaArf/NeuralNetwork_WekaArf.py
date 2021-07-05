@@ -2,9 +2,9 @@
 import logging
 import os
 
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # FATAL
-logging.getLogger('tensorflow').setLevel(logging.FATAL)
-"""/Suppress Tensorflow prints"""
+# os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # FATAL
+# logging.getLogger('tensorflow').setLevel(logging.FATAL)
+# """/Suppress Tensorflow prints"""
 
 import pandas as pd
 import numpy as np
