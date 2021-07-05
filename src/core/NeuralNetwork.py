@@ -20,8 +20,8 @@ from src.functions import confusion_matrix_NN, roc_curve_plot
 from src.support import data_strategy
 
 PLOTS = False
-REPORT = False
-DEBUG = True
+REPORT = True
+DEBUG = False
 
 
 def nn_model(input_dim, output_dim, nodes=40, dropout_rate=None):

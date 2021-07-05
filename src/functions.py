@@ -218,7 +218,7 @@ def evaluateCV(folds, ListXTrain, ListXTest, ListyTrain, ListyTest, n_estimators
 
 def evaluateCV_3Classifiers(folds, ListXTrain, ListXTest, ListyTrain, ListyTest, n_estimators=100, randomization="sqrt",
                             bootstrap=0.5, n_neighbors=3):
-    avgTest = [0.0, 0.0, 0.0]
+    avgTest = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 
     for i in range(folds):
         "Addestramento classificatori"
@@ -230,16 +230,35 @@ def evaluateCV_3Classifiers(folds, ListXTrain, ListXTest, ListyTrain, ListyTest,
         # SVM = svm.SVC(C=7.46, gamma=0.25).fit(ListXTrain[i], ListyTrain[i])       # Per il 71 Features
 
         "EER"
-        rf_eer, rf_roc_auc = evaluateEER2(ListyTest[i], rf.predict(ListXTest[i]))
+        rf_y_prediction = rf.predict(ListXTest[i])
+        rf_eer, rf_roc_auc = evaluateEER2(ListyTest[i], rf_y_prediction)
+        rf_oa = accuracy_score(ListyTest[i], rf_y_prediction)  # oa
+        rf_ba = balanced_accuracy_score(ListyTest[i], rf_y_prediction)  # balanced accuracy
         # print("Rf eer_threshold: ", rf_eer)
-        knn_eer, knn_roc_auc = evaluateEER2(ListyTest[i], neigh.predict(ListXTest[i]))
+
+        knn_y_prediction = neigh.predict(ListXTest[i])
+        knn_eer, knn_roc_auc = evaluateEER2(ListyTest[i], knn_y_prediction)
+        knn_oa = accuracy_score(ListyTest[i], knn_y_prediction)  # oa
+        knn_ba = balanced_accuracy_score(ListyTest[i], knn_y_prediction)  # balanced accuracy
         # print("knn eer_threshold: ", knn_eer)
-        svm_eer, svmroc_auc = evaluateEER2(ListyTest[i], SVM.predict(ListXTest[i]))
+
+        svm_y_prediction = SVM.predict(ListXTest[i])
+        svm_eer, svm_roc_auc = evaluateEER2(ListyTest[i], svm_y_prediction)
+        svm_oa = accuracy_score(ListyTest[i], svm_y_prediction)  # oa
+        svm_ba = balanced_accuracy_score(ListyTest[i], svm_y_prediction)  # balanced accuracy
         # print("svm eer_threshold: ", svm_eer)
 
         avgTest[0] += rf_eer[0]
-        avgTest[1] += knn_eer[0]
-        avgTest[2] += svm_eer[0]
+        avgTest[1] += rf_oa
+        avgTest[2] += rf_ba
+
+        avgTest[3] += knn_eer[0]
+        avgTest[4] += knn_oa
+        avgTest[5] += knn_ba
+
+        avgTest[6] += svm_eer[0]
+        avgTest[7] += svm_oa
+        avgTest[8] += svm_ba
 
         # print(avgTest)
         # print(i)

@@ -25,15 +25,15 @@ def data_strategy(X, y, Strategy):
     if Strategy == 'OverSampler':
         sample = RandomOverSampler(sampling_strategy='minority')
         X_over, y_over = sample.fit_resample(X, y)
-        print(Counter(y_over))
+        print('-> Class Counter post ' + Strategy + ' Strategy: ', Counter(y_over))
         return X_over, y_over
     elif Strategy == 'UnderSampler':
         sample = RandomUnderSampler(sampling_strategy='majority')
         X_over, y_over = sample.fit_resample(X, y)
-        print(Counter(y_over))
+        print('-> Class Counter post ' + Strategy + ' Strategy: ', Counter(y_over))
         return X_over, y_over
     else:
-        print("-- No Sampler -- ")
+        print('-> XX Class Counter post NO ' + Strategy + ' Strategy: ', Counter(y))
         return X, y
 
 

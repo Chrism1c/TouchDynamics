@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from sklearn.metrics import roc_curve, auc, RocCurveDisplay
+from sklearn.metrics import roc_curve, auc, RocCurveDisplay, accuracy_score, balanced_accuracy_score
 import matplotlib.pyplot as plt
 import numpy as np
 
