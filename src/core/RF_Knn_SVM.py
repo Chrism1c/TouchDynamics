@@ -1,3 +1,5 @@
+from collections import Counter
+
 import pandas as pd
 from src.functions import sss_, evaluateCV_3Classifiers
 from src.support import data_strategy
@@ -11,8 +13,12 @@ def RF_kNN_SVM(X, subjects, db_name, clasx, Strategy, NFold, Test_Size, n_estima
                n_neighbors):
     print('Running ---> | ({}) database | ({}) class  | ({}) data strategy '.format(db_name, clasx, Strategy))
 
+    print(Counter(subjects))
     "Binarize dataset"
+
     y = [0 if val == clasx else 1 for val in subjects]
+
+    print(Counter(y))
 
     # OVERSAMPLIG classe Minoritaria / DOWNSAMPLING classe Maggioritaria
     X, Y = data_strategy(X, y, Strategy)

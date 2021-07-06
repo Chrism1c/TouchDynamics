@@ -225,9 +225,11 @@ def evaluateCV_3Classifiers(folds, ListXTrain, ListXTest, ListyTrain, ListyTest,
         rf = randomforest(ListXTrain[i], ListyTrain[i], n_estimators, randomization, bootstrap)
         neigh = KNNx(ListXTrain[i], ListyTrain[i], n_neighbors)
 
-        SVM = svm.LinearSVC(dual=False).fit(ListXTrain[i], ListyTrain[i])         # Normalmente
+        # SVM = svm.LinearSVC(dual=False).fit(ListXTrain[i], ListyTrain[i])         # Normalmente
         # SVM = svm.SVC(C=10.55, gamma=1.86).fit(ListXTrain[i], ListyTrain[i])      # Per il 41 Features
         # SVM = svm.SVC(C=7.46, gamma=0.25).fit(ListXTrain[i], ListyTrain[i])       # Per il 71 Features
+        SVM = svm.SVC(C=2, gamma=8).fit(ListXTrain[i], ListyTrain[i])      # D1 - D4
+        # SVM = svm.SVC(C=8, gamma=8).fit(ListXTrain[i], ListyTrain[i])       # D2
 
         "EER"
         rf_y_prediction = rf.predict(ListXTest[i])

@@ -1,7 +1,8 @@
 import os
 import pandas as pd
-
-from src.BioIdent.BioIdent_management import Path_BioIdent, load_data, subjects, gender, touch_experience, Path_BioIdent_Results
+import numpy as np
+from src.BioIdent.BioIdent_management import Path_BioIdent, load_data, subjects, gender, touch_experience, \
+    Path_BioIdent_Results
 from src.core.RF_Knn_SVM import RF_kNN_SVM, listBootstrap, listRandomization, listN_estimators
 
 if __name__ == '__main__':
@@ -13,13 +14,15 @@ if __name__ == '__main__':
     # indice_database_BioIdent = 3  # #  0-1-2-3
     # db_name = datasets_BioIdent[indice_database_BioIdent]
 
-    datasets_BioIdent = ['dataset1.arff']
+    datasets_BioIdent = ['dataset1.arff', 'dataset2.arff', 'dataset3.arff', 'dataset4.arff']
+
+    selected = ['dataset1.arff'] #, 'dataset2.arff']
 
     Test_Size = 0.1
 
     "Parametri Generali "
     NFold = 3
-    Strategy = 'OverSampler'  # 'UnderSampler'
+    Strategy = 'OverSampler'  # 'UnderSampler'   #
 
     "Knn"
     n_neighbors = 3
@@ -34,24 +37,13 @@ if __name__ == '__main__':
                                     'svm_eer', 'svm_oa', 'svm_ba'])
 
     # db_index = 0
-    for db_name in datasets_BioIdent:
-        if db_name == 'dataset1.arff':
-            classes = subjects
-            indice_database_BioIdent = 0
-        elif db_name == 'dataset2.arff':
-            classes = subjects
-            indice_database_BioIdent = 1
-        elif db_name == 'dataset3.arff':
-            classes = gender
-            indice_database_BioIdent = 2
-        elif db_name == 'dataset4.arff':
-            classes = touch_experience
-            indice_database_BioIdent = 3
-        for clasx in classes:
-            print("classes ", classes)
-            X, subjects = load_data(indice_database_BioIdent)
-            # print(data)
-
+    for db_name in selected:
+        db_index = datasets_BioIdent.index(db_name)
+        print("\nindex : ", db_index)
+        X, subjects = load_data(db_index)
+        print('subjects ', np.unique(subjects))
+        for clasx in np.unique(subjects):
+            print()
             avgTest_result = RF_kNN_SVM(X, subjects, db_name, clasx, Strategy, NFold, Test_Size,
                                         n_estimators, randomization, bootstrap, n_neighbors)
 
@@ -59,14 +51,13 @@ if __name__ == '__main__':
                                   avgTest_result[3], avgTest_result[4], avgTest_result[5],
                                   avgTest_result[6], avgTest_result[7], avgTest_result[8]]
 
-    results.loc['AVG'] = [
-        results['rf_eer'].mean(), results['rf_oa'].mean(), results['rf_ba'].mean(),
-        results['knn_eer'].mean(), results['knn_oa'].mean(), results['knn_ba'].mean(),
-        results['svm_eer'].mean(), results['svm_oa'].mean(), results['svm_ba'].mean(),
-    ]
-    print("RESULTS AVG = ", results['rf_eer'].mean(), results['rf_oa'].mean(), results['rf_ba'].mean(),
-          results['knn_eer'].mean(), results['knn_oa'].mean(), results['knn_ba'].mean(),
-          results['svm_eer'].mean(), results['svm_oa'].mean(), results['svm_ba'].mean(),
-          )
-    results.to_csv(Path_BioIdent_Results + '/' + db_name.replace('.arff', '_Results_' + Strategy + '_Shellow') + ".csv")
-
+        results.loc['AVG'] = [
+            results['rf_eer'].mean(), results['rf_oa'].mean(), results['rf_ba'].mean(),
+            results['knn_eer'].mean(), results['knn_oa'].mean(), results['knn_ba'].mean(),
+            results['svm_eer'].mean(), results['svm_oa'].mean(), results['svm_ba'].mean(),
+        ]
+        print("RESULTS AVG = ", results['rf_eer'].mean(), results['rf_oa'].mean(), results['rf_ba'].mean(),
+              results['knn_eer'].mean(), results['knn_oa'].mean(), results['knn_ba'].mean(),
+              results['svm_eer'].mean(), results['svm_oa'].mean(), results['svm_ba'].mean(),
+              )
+        results.to_csv(Path_BioIdent_Results + '/' + db_name.replace('.arff', '_Results_' + Strategy + '_Shellow') + ".csv")
