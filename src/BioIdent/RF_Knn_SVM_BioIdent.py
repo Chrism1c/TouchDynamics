@@ -22,7 +22,7 @@ if __name__ == '__main__':
 
     "Parametri Generali "
     NFold = 3
-    Strategy = 'OverSampler'  # 'UnderSampler'   #
+    Strategy = 'UnderSampler' # 'OverSampler'  # OverSampler'  # 'UnderSampler'   #
 
     "Knn"
     n_neighbors = 3
@@ -41,6 +41,7 @@ if __name__ == '__main__':
         db_index = datasets_BioIdent.index(db_name)
         print("\nindex : ", db_index)
         X, subjects = load_data(db_index)
+        print('subjects ', subjects)
         print('subjects ', np.unique(subjects))
         for clasx in np.unique(subjects):
             print()
@@ -60,4 +61,4 @@ if __name__ == '__main__':
               results['knn_eer'].mean(), results['knn_oa'].mean(), results['knn_ba'].mean(),
               results['svm_eer'].mean(), results['svm_oa'].mean(), results['svm_ba'].mean(),
               )
-        results.to_csv(Path_BioIdent_Results + '/' + db_name.replace('.arff', '_Results_' + Strategy + '_Shellow') + ".csv")
+        # results.to_csv(Path_BioIdent_Results + '/' + db_name.replace('.arff', '_Results_' + Strategy + '_Shellow') + ".csv")

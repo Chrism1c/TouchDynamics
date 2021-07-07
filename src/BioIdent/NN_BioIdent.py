@@ -8,17 +8,16 @@ from src.core.NeuralNetwork import calulate_and_test_model
 if __name__ == '__main__':
 
     # BioIdent_DBs = os.listdir(Path_BioIdent)
-    #
     # print(BioIdent_DBs)
 
     datasets_BioIdent = ['dataset1.arff', 'dataset2.arff', 'dataset3.arff', 'dataset4.arff']
 
-    selected = ['dataset1.arff', 'dataset2.arff']
+    selected = ['dataset1.arff'] #, 'dataset2.arff']
 
-    EPOCHS = 100
+    EPOCHS = 10
     NODES = 300
     Test_Size = 0.1
-    Strategy = 'UnderSampler'   # 'OverSampler'  #
+    Strategy = 'OverSampler'  # 'UnderSampler'   #
 
     results = pd.DataFrame(columns=['classe', 'eer', 'auc'])
 

@@ -1,5 +1,6 @@
 import pandas as pd
 import glob
+import numpy as np
 from src.support import get_df_from_arff
 
 Path_BioIdent = 'D:/pycharmProjects/TouchDynamics/datasets/Swipes/BioIdent/data_arff'
@@ -11,10 +12,29 @@ def load_data(db_index):
     # print(datasets_BioIdent[db_index])
     data = get_df_from_arff(datasets_BioIdent[db_index])
 
+    # directions = data.loc[round(data['up_down_left_right'], 2) == 1]
+    # print(directions['up_down_left_right'])
+
+    # print(data.head())
+    data_Up = data.loc[round(data['up_down_left_right'], 2) == 0]
+    # print(data_Up['up/down/left/rightflag'].head())
+    data_Down = data.loc[round(data['up_down_left_right'], 2) == 0.33]
+    # print(data_Down['up/down/left/rightflag'].head())
+    data_Left = data.loc[round(data['up_down_left_right'], 2) == 0.67]
+    # print(data_Left['up/down/left/rightflag'].head())
+    data_Right = data.loc[round(data['up_down_left_right'], 2) == 1]
+    # print(data_Right['up/down/left/rightflag'].head())
+
+    # data = data_Up
+    # data = data_Down
+    # data = data_Left
+    data = data_Right
+
     try:
         if db_index == 0 or db_index == 1:
             data['user_id'] = pd.to_numeric(data['user_id'])
             return data.drop(columns=['user_id']), data['user_id'].values
+            # return data.drop(columns=['up_down_left_right']), data['up_down_left_right'].values
         elif db_index == 2:
             data['gender'] = pd.to_numeric(data['gender'])
             return data.drop(columns=['gender']), data['gender'].values
