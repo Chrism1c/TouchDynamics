@@ -1,9 +1,10 @@
 import pandas as pd
 from src.support import clean_dataset
 
-Path_TouchAnalytics = '/datasets/Swipes/TouchAnalytics/'
-Path_TouchAnalyticsArff = '/datasets/Swipes/TouchAnalytics/data_arff/TouchAnalytics.arff'
-Path_TouchAnalytics_Results = 'D:/pycharmProjects/TouchDynamics/doc/Results/TouchAnalytics_Results'
+Pre_path = 'D:/pycharmProjects/TouchDynamics/'
+Path_TouchAnalytics = Pre_path + '/datasets/Swipes/TouchAnalytics/'
+Path_TouchAnalyticsArff = Pre_path + '/datasets/Swipes/TouchAnalytics/data_arff/TouchAnalytics.arff'
+Path_TouchAnalytics_Results = Pre_path + 'doc/Results/TouchAnalytics_Results'
 
 TouchAnalytics_CSV = 'FileName2.csv'
 TouchAnalytics_pickle = 'touchalytics.pikle'
@@ -32,7 +33,7 @@ def load_data():
     # print(data_Right['up/down/left/rightflag'].head())
 
     data['user id'] = data['user id'].astype(int)
-    # data = data_Down  # data_Up     # data_Right  # data_Left
+    # data = data_Right   # data_Down  # data_Up     # data_Right  # data_Left
 
     return data.drop(columns=['user id', 'doc id', 'phone id', 'change of finger orientation']), data['user id'].values
 
