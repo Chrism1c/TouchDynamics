@@ -13,20 +13,21 @@
 - [**Credits**](#credits)
 
 <ul>
-
+<li>
 
 ## What is Touch Dynamics?
 
 **TouchDynamics** is project developed for a "Biometric systems" exam 
 at **University Aldo Moro** of Taranto Italy. <br>
 its goal is to replicate and test best and most popular classifiers on State of Art datasets. 
-It is tested on 4 different datasets, 2 are datasets of Keystrokes, 2 are datasets od swipes.
-1 - TouchAnalytics [58] (Keystrokes)
-2 - BioIdent [70]   (Keystrokes)
-3 - The Mobikey [31]    (Swipes)
-4 - Weka Arff [68]  (Swipes)
+It is tested on 4 different datasets, 2 are datasets of Keystrokes, 2 are datasets od swipes. <br>
+1 - TouchAnalytics [58] (Keystrokes) <br>
+2 - BioIdent [70]   (Keystrokes) <br>
+3 - The Mobikey [31]    (Swipes) <br>
+4 - Weka Arff [68]  (Swipes) <br>
 
-
+</li>
+<li>
 
 ## Requirements and Dependencies
 ```
@@ -47,14 +48,19 @@ keras~=2.3.1
 tensorflow~=1.15.0
  ```
 
+</li>
+<li>
 
 ## Quick Start
 
-**Automatic Setup installer with Python :**<br>
-1 - Download and Install "Logs Manager - Setup Online.exe" <br>
-2 - Good work with **Logs Manager** <br>
+1 - Install requirements with: pip install -r requirements.txt <br>
+2 - Open src/"Dataset Name"/ execute:<br>
+    - NN_"Dataset Name".py for Neural Network test<br>
+    - RF_Knn_SVM_"Dataset Name".py for Shellow learning test<br>
 NB: Internet Connection required
 
+</li>
+<li>
 
 ## Classifiers
 
@@ -64,7 +70,7 @@ NB: Internet Connection required
     Random forests are a solution that minimizes the overfitting of 
     the training set with respect to decision trees.
     <p align="center">
-        <img src="doc/images/RF.png" width="500" height="600">
+        <img src="doc/images/RF.png">
     </p>
 </li>
 <li>
@@ -76,7 +82,7 @@ NB: Internet Connection required
     assigned to the most common class among its k closest neighbors.
     If k = 1, the object is simply assigned to the class of that single closest neighbor.
     <p align="center">
-        <img src="doc/images/kNN.png" width="500" height="600">
+        <img src="doc/images/kNN.png">
     </p>
 </li>
 <li>
@@ -87,7 +93,7 @@ NB: Internet Connection required
     If not linear, the SVM carries out the classification using the kernel method,
     implicitly mapping their inputs in a space of multi-dimensional features.
     <p align="center">
-        <img src="doc/images/SVM.gif" width="500" height="600">
+        <img src="doc/images/SVM.gif">
     </p>
 </li>
 <li>
@@ -99,17 +105,41 @@ NB: Internet Connection required
     Feed-forward networks do not have input memory that occurred in previous times, 
     so the output is determined only by the current input.
     <p align="center">
-        <img src="doc/images/NN.gif" width="500" height="600">
+        <img src="doc/images/NN.gif">
     </p>
 </li>
 
+</li>
+<li>
+
 ## Instructions
 
-- XX
-- XXX
-- XXXX
+Custom settings for testing
+- Parameters for: **Neural Networks**:
+```
+    EPOCHS = 10
+    NODES = 300
+    Test_Size = 0.1
+    Strategy = 'OverSampler'  # 'UnderSampler'
+ ```
+- Parameters for: **Random Forest / kNN / SVM**:
+```
+    "Parametri Generali "
+    Test_Size = 0.1
+    NFold = 3
+    Strategy = 'UnderSampler' # 'OverSampler' 
 
+    "Knn"
+    n_neighbors = 3
 
+    "Random Forest"
+    n_estimators = 100          # [10, 20, 30, 100]
+    randomization = "sqrt"      # ["sqrt", "log2"]
+    bootstrap = 0.5             # [0.5, 0.6, 0.7, 0.8, 0.9]
+ ```
+Execute the ".py" to lunch the test
+
+</li>
 <li>
 
 ### Credits
