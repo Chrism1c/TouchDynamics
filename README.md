@@ -1,7 +1,7 @@
 # TouchDynamics
 ### Touch Dynamics Biometrics test on 4 State of Art datasets<br>
 <p align="center">
-  <img src="doc/images/logo.png">
+  <img src="doc/images/TouchDynamicsLogo.png">
 </p>
 
 ### Index
