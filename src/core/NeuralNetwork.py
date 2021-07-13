@@ -47,6 +47,7 @@ def calulate_and_test_model(X, y, db_name, clasx, EPOCHS, nodes, Test_Size, Stra
     print('------------------------------------')
     print('--> Class {} has occurred {} times'.format(clasx, Counter(y)[clasx]))
     print('--> Class Counter pre Binarize', Counter(y))
+    # print("AVG Samples 4 user : ", (np.mean(Counter(y).values())))
 
     "Binarize dataset"
     y = [0 if val == clasx else 1 for val in y]
