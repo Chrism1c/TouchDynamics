@@ -45,12 +45,7 @@ seaborn~=0.10.1
 joblib~=0.14.1
 keras~=2.3.1
 tensorflow~=1.15.0
- ```  
-	
-**Resources for dependencies required** <br>
-Panadas: [**pandas.pydata.org**](https://pandas.pydata.org/) <br>
-
-
+ ```
 
 
 ## Quick Start
@@ -61,8 +56,6 @@ Panadas: [**pandas.pydata.org**](https://pandas.pydata.org/) <br>
 NB: Internet Connection required
 
 
-
-
 ## Classifiers
 
 <li>
@@ -71,7 +64,7 @@ NB: Internet Connection required
     Random forests are a solution that minimizes the overfitting of 
     the training set with respect to decision trees.
     <p align="center">
-        <img src="doc/images/RF.png">
+        <img src="doc/images/RF.png" width="500" height="600">
     </p>
 </li>
 <li>
@@ -83,7 +76,7 @@ NB: Internet Connection required
     assigned to the most common class among its k closest neighbors.
     If k = 1, the object is simply assigned to the class of that single closest neighbor.
     <p align="center">
-        <img src="doc/images/kNN.png">
+        <img src="doc/images/kNN.png" width="500" height="600">
     </p>
 </li>
 <li>
@@ -94,7 +87,7 @@ NB: Internet Connection required
     If not linear, the SVM carries out the classification using the kernel method,
     implicitly mapping their inputs in a space of multi-dimensional features.
     <p align="center">
-        <img src="doc/images/SVM.gif">
+        <img src="doc/images/SVM.gif" width="500" height="600">
     </p>
 </li>
 <li>
@@ -106,7 +99,7 @@ NB: Internet Connection required
     Feed-forward networks do not have input memory that occurred in previous times, 
     so the output is determined only by the current input.
     <p align="center">
-        <img src="doc/images/NN.png">
+        <img src="doc/images/NN.gif" width="500" height="600">
     </p>
 </li>
 
