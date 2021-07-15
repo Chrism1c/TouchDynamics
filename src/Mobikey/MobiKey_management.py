@@ -2,8 +2,9 @@ import pandas as pd
 import glob
 from src.support import get_df_from_arff
 
-Path_MobiKey = 'D:\pycharmProjects\TouchDynamics\datasets\KeystrokeTouch\MobiKey'
-Path_MobiKey_Results = 'D:\pycharmProjects\TouchDynamics\doc\Results\MobiKey_Results'
+Pre_path = 'D:/pycharmProjects/'
+Path_MobiKey = Pre_path + 'TouchDynamics/datasets/KeystrokeTouch/MobiKey/FeaturesExtracted'
+Path_MobiKey_Results = Pre_path + 'TouchDynamics/doc/Results/MobiKey_Results'
 
 
 def load_data(db_index):

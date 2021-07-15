@@ -18,13 +18,13 @@
 ## What is Touch Dynamics?
 
 **TouchDynamics** is project developed for a "Biometric systems" exam 
-at **University Aldo Moro** of Taranto Italy. <br>
+at **Aldo Moro University** of Taranto Italy. <br>
 its goal is to replicate and test best and most popular classifiers on State of Art datasets. 
 It is tested on 4 different datasets, 2 are datasets of Keystrokes, 2 are datasets od swipes. <br>
-1 - TouchAnalytics [58] (Keystrokes) <br>
-2 - BioIdent [70]   (Keystrokes) <br>
-3 - The Mobikey [31]    (Swipes) <br>
-4 - Weka Arff [68]  (Swipes) <br>
+1 - TouchAnalytics [58] (Swipes) <br>
+2 - BioIdent [70]   (Swipes) <br>
+3 - The Mobikey [31]    (Keystrokes) <br>
+4 - Weka Arff [68]  (Keystrokes) <br>
 
 </li>
 <li>
@@ -57,7 +57,7 @@ tensorflow~=1.15.0
 2 - Open src/"Dataset Name"/ execute:<br>
     - NN_"Dataset Name".py for Neural Network test<br>
     - RF_Knn_SVM_"Dataset Name".py for Shellow learning test<br>
-NB: Internet Connection required
+NB: Internet Connection is required to install dependencies
 
 </li>
 <li>
