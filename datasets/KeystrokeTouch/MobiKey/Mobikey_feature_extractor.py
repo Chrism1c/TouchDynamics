@@ -2,6 +2,9 @@ import os
 import pandas as pd
 import numpy as np
 import math
+import arff
+
+from src.support import get_df_from_arff
 
 Pre_Path = "D:/pycharmProjects/"
 Raw_Mobikey_path = Pre_Path + 'TouchDynamics/datasets/KeystrokeTouch/MobiKey/RawData/rawdata'
@@ -10,6 +13,56 @@ Raw_Mobikey_pickle_path = Pre_Path + 'TouchDynamics/datasets/KeystrokeTouch/Mobi
 users_mobikey = [100, 101, 102, 103, 104, 105, 200, 201, 202, 203, 300, 301, 302, 303, 400, 401, 402, 403, 404, 500,
                  501, 502, 503, 600, 601, 602, 603, 604, 605, 700, 701, 702, 800, 801, 802, 900, 1000, 1001, 1002, 1003,
                  1004, 1100, 1101, 1103, 1104, 1105, 1200, 1201, 1203, 1204, 1300, 1301, 1302, 1303]
+
+pickle_names = ['rawData_all_data_Easy_Keystrokes.pickle', 'rawData_all_data_Logicalstrong_Keystrokes.pickle',
+                'rawData_all_data_Strong_Keystrokes.pickle']
+
+cols_extracted = [
+    'holdtime1', 'holdtime2', 'holdtime3', 'holdtime4', 'holdtime5', 'holdtime6', 'holdtime7', 'holdtime8',
+    'holdtime9',
+    'holdtime10', 'holdtime11', 'holdtime12', 'holdtime13', 'holdtime14', 'holdtime15',
+    'downdown1', 'downdown2', 'downdown3', 'downdown4', 'downdown5', 'downdown6', 'downdown7', 'downdown8',
+    'downdown9',
+    'downdown10', 'downdown11', 'downdown12', 'downdown13', 'downdown14',
+    'updown1', 'updown2', 'updown3', 'updown4', 'updown5', 'updown6', 'updown7', 'updown8', 'updown9', 'updown10',
+    'updown11', 'updown12', 'updown13', 'updown14',
+    'pressure1', 'pressure2', 'pressure3', 'pressure4', 'pressure5', 'pressure6', 'pressure7', 'pressure8',
+    'pressure9',
+    'pressure10', 'pressure11', 'pressure12', 'pressure13', 'pressure14', 'pressure15',
+    'fingerarea1', 'fingerarea2', 'fingerarea3', 'fingerarea4', 'fingerarea5', 'fingerarea6', 'fingerarea7',
+    'fingerarea8',
+    'fingerarea9', 'fingerarea10', 'fingerarea11', 'fingerarea12', 'fingerarea13', 'fingerarea14', 'fingerarea15',
+    'meanholdtime',
+    'meanpressure',
+    'meanfingerarea',
+    'meanxaccelaration',
+    'meanyaccelaration',
+    'meanzaccelaration',
+    'velocity',
+    'totaltime',
+    'totaldistance',
+    'user_id'
+]
+
+to_remove_for_logicalstrong_strong_db = ['holdtime14', 'holdtime15',
+                                         'downdown13', 'downdown14',
+                                         'updown13', 'updown14',
+                                         'pressure14', 'pressure15',
+                                         'fingerarea14', 'fingerarea15',
+                                         ]
+
+to_keep_for_SOF_datasets = [
+    'meanholdtime',
+    'meanpressure',
+    'meanfingerarea',
+    'meanxaccelaration',
+    'meanyaccelaration',
+    'meanzaccelaration',
+    'velocity',
+    'totaltime',
+    'totaldistance',
+    'user_id'
+]
 
 
 def raw_data_to_pickle(Raw_Mobikey_path, Raw_Mobikey_pickle_path):
@@ -72,11 +125,6 @@ def get_all_data(raw_data, pw_index):
     return all_data
 
 
-# # def get_samples(raw_data):
-#     samples_list = list()
-#     Repetition = 0
-
-
 def get_HTs(sample):
     HTS_list = list()
     for index, row in sample.iterrows():
@@ -111,6 +159,7 @@ def get_pressure(sample):
     pressure_list = list()
     for index, row in sample.iterrows():
         pressure_list.append(row[6])
+    pressure_list = [round(x, 4) for x in pressure_list]
     return pressure_list
 
 
@@ -118,125 +167,79 @@ def get_fingerarea(sample):
     fingerarea_list = list()
     for index, row in sample.iterrows():
         fingerarea_list.append(row[7])
+    fingerarea_list = [round(x, 4) for x in fingerarea_list]
     return fingerarea_list
 
 
 def get_meanholdtime(HTS_list):
-    return np.mean(HTS_list)
+    return round(np.mean(HTS_list), 4)
 
 
 def get_meanpressure(pressure_list):
-    return np.mean(pressure_list)
+    return round(np.mean(pressure_list), 4)
 
 
 def get_meanfingerarea(fingerarea_list):
-    return np.mean(fingerarea_list)
+    return round(np.mean(fingerarea_list), 4)
 
 
 def get_meanxaccelaration(sample):
     xaccelaration_list = list()
     for index, row in sample.iterrows():
         xaccelaration_list.append(row['gravityX'])
-    return np.mean(xaccelaration_list)
+    return round(np.mean(xaccelaration_list), 4)
 
 
 def get_meanyaccelaration(sample):
     yaccelaration_list = list()
     for index, row in sample.iterrows():
         yaccelaration_list.append(row['gravityY'])
-    return np.mean(yaccelaration_list)
+    return round(np.mean(yaccelaration_list), 4)
 
 
 def get_meanzaccelaration(sample):
     zaccelaration_list = list()
     for index, row in sample.iterrows():
         zaccelaration_list.append(row['gravityZ'])
-    return np.mean(zaccelaration_list)
+    return round(np.mean(zaccelaration_list), 4)
 
 
 def get_velocity(sample):
     # get_totaldistance(sample) / get_totaltime(sample)
-    return 0  # get_totaldistance(sample) / get_totaltime(sample)
+    return round(get_totaldistance(sample) / get_totaltime(sample), 4)
 
 
 def get_totaltime(sample):
     # [last_index][5] - [fisrt_index][4]
     tail = sample.tail(1)
     head = sample.head(1)
-    # print(list(tail['UpTime'])[0] - list(head['DownTime'])[0])
     return list(tail['UpTime'])[0] - list(head['DownTime'])[0]
 
 
 def get_totaldistance(sample):
-    import numpy as np
-    import matplotlib.pyplot as plt
     # length path in pixel
     totaldistance = 0
-    # x_list = list()
-    # y_list = list()
     ix = 0
     for index, row in sample.iterrows():
         if ix < sample.shape[0] - 1:
             start_x = row['RawX']
             start_y = row['RawY']
-            # if index == 0:
-            #     x_list.append(start_x)
-            #     y_list.append(start_y)
-            # plt.scatter(start_x, start_y)
-
             stop_x = sample.iloc[ix + 1]['RawX']
             stop_y = sample.iloc[ix + 1]['RawY']
-            # x_list.append(stop_x)
-            # y_list.append(stop_y)
-            # print(start_x, start_y, stop_x, stop_y)
-            # totaldistance = totaldistance + np.sqrt(
-            #     np.power((stop_x - start_x), 2) + np.power((stop_y - start_y), 2))
             dx2 = (stop_x - start_x) ** 2  # (200-10)^2
             dy2 = (stop_y - start_y) ** 2  # (300-20)^2
             distance = math.sqrt(dx2 + dy2)
-
-            # print("distance: ", distance)
             totaldistance = totaldistance + distance
-            # print("-- ", totaldistance)
         ix = ix + 1
-    # plt.plot(x_list, y_list, marker="*")
-    # plt.show()
+    return round(totaldistance, 4)
 
 
-def get_totaldistance2():
-    rawX = [621.25,
-            575.0,
-            301.875,
-            155.625,
-            579.375,
-            628.75,
-            504.375,
-            365.625,
-            428.125,
-            99.375,
-            365.0,
-            103.125,
-            291.875,
-            637.5,
-            98.125
-            ]
+def get_totaldistance_test():
+    rawX = [621.25, 575.0, 301.875, 155.625, 579.375, 628.75, 504.375, 365.625, 428.125, 99.375, 365.0, 103.125,
+            291.875, 637.5, 98.125]
 
-    rawY = [961.8182400000001,
-            863.03033,
-            1055.7576,
-            942.42426,
-            847.2727699999999,
-            947.2727699999999,
-            857.5758,
-            850.30304,
-            844.8485,
-            959.3939999999999,
-            849.697,
-            966.0606,
-            849.697,
-            969.697,
-            975.7576
-            ]
+    rawY = [961.8182400000001, 863.03033, 1055.7576, 942.42426, 847.2727699999999, 947.2727699999999, 857.5758,
+            850.30304, 844.8485, 959.3939999999999, 849.697, 966.0606, 849.697, 969.697, 975.7576]
 
     totaldistance = 0
     for i in range(len(rawX)):
@@ -276,8 +279,8 @@ def split_raw_data_for_passwords():
 
     data_raw = pd.read_pickle(Raw_Mobikey_pickle_path + '/' + 'rawData_Keystrokes.pickle')
     data_raw = data_raw.set_axis(
-            ['UserId', 'DeviceId', 'SessionId', 'Key', 'DownTime', 'UpTime', 'Pressure', 'FingerArea', 'RawX', 'RawY',
-             'gravityX', 'gravityY', 'gravityZ', 'Hands', 'PasswordType', 'Repetition'], axis=1)
+        ['UserId', 'DeviceId', 'SessionId', 'Key', 'DownTime', 'UpTime', 'Pressure', 'FingerArea', 'RawX', 'RawY',
+         'gravityX', 'gravityY', 'gravityZ', 'Hands', 'PasswordType', 'Repetition'], axis=1)
 
     # all_data_Easy = get_all_data(data_raw, 0)  # 0 - Easy
     all_data_Easy = data_raw.query('PasswordType == 0')
@@ -297,24 +300,11 @@ def split_raw_data_for_passwords():
     print("FINE Split per password.pikle")
 
 
-if __name__ == '__main__':
-    print('')
-
-    # raw_data_to_pickle(Raw_Mobikey_path, Raw_Mobikey_pickle_path)
-    # raw_data = pd.read_pickle(Raw_Mobikey_pickle_path + '/' + 'rawData_Keystrokes.pickle')
-    # print(raw_data)
-    # print(raw_data.shape)
-    # print("FINE PICKLE")
-
-    #################################################################################àààà
-
-    split_raw_data_for_passwords()
-
-    #################################################################################àààà
-
-    "Estrazione features"  # Test con solo Evoline1
+def generate_AllFeatures_datasets(pickle_index, cols_extracted):
+    """Estrazione features"""
 
     """
+    # EASY #
     holdtime * 15       [5] - [4]
     downdown * 15       [index+1][4] - [index][4]
     updown * 15         [index+1][4] - [index][5]
@@ -333,37 +323,39 @@ if __name__ == '__main__':
     user_id
     """
 
+    pickle_sizes = [83, 73, 73]
 
-    all_data_Easy = pd.read_pickle(Raw_Mobikey_pickle_path + '/' + 'rawData_all_data_Easy_Keystrokes.pickle')
+    all_data = pd.read_pickle(Raw_Mobikey_pickle_path + '/' + pickle_names[pickle_index])
 
-    # columns_names = list(all_data_Easy.columns)
-    # print(columns_names)
+    columns_names = list(all_data.columns)
+    print(columns_names)
 
     # all_data_Easy.to_csv(Raw_Mobikey_pickle_path + '/' + 'rawData_all_data_Easy_Keystrokes.csv', index=False)
 
     samples_list = list()
-    for subject in np.unique(list(all_data_Easy['UserId'])):  # 600 - 601 - 602 - 603 - 604 - 605
-        user_filtered = all_data_Easy.query('UserId' + ' == ' + str(subject))
+    for subject in np.unique(list(all_data['UserId'])):  # 600 - 601 - 602 - 603 - 604 - 605
+        user_filtered = all_data.query('UserId' + ' == ' + str(subject))
         for session in np.unique(list(user_filtered['SessionId'])):  # 0 - 3 - 5
-            session_filtered = all_data_Easy.query(
+            session_filtered = all_data.query(
                 'UserId' + ' == ' + str(subject) + ' and ' +
                 'SessionId' + ' == ' + str(session)
             )
             for rep in np.unique(list(session_filtered['Repetition'])):
-                rep_filtered = all_data_Easy.query(
+                rep_filtered = all_data.query(
                     'UserId' + ' == ' + str(subject) + ' and ' +
                     'SessionId' + ' == ' + str(session) + 'and ' +
                     'Repetition' + ' == ' + str(rep)
                 )
                 samples_list.append(rep_filtered)
-    # print(samples_list)
-    # print(len(samples_list))
 
     features = list()
+    extracted_features_list = list()
+
+    res_index = 0
     for sample in samples_list:
         try:
             # calcola ogni feature e crea il vettore
-            # print(sample.shape)
+
             features = get_HTs(sample) + get_DDs(sample) + get_UDs(sample) + \
                        get_pressure(sample) + get_fingerarea(sample)
 
@@ -381,12 +373,70 @@ if __name__ == '__main__':
 
             features.append(list(sample.head(1)['UserId'])[0])
 
-            print((list(sample.head(1)['UserId'])[0]) , " -- ", features)
+            if len(features) == pickle_sizes[pickle_index]:
+                extracted_features_list.append(features)
+                print((list(sample.head(1)['UserId'])[0]), " -- ", len(features), ' --> ', features)
+            else:
+                print('Jumped -')
         except:
             print("FAIL")
 
-
     print(len(samples_list))
+    print(len(cols_extracted))
+    if pickle_index != 0:  # not easy pw
+        cols_extracted = [feature_ for feature_ in cols_extracted if
+                          feature_ not in to_remove_for_logicalstrong_strong_db]
+    res = pd.DataFrame(extracted_features_list, columns=cols_extracted)
+
+    arff_name = (pickle_names[pickle_index].replace('rawData', 'Mobikey')).replace('data_', '').replace(
+        '_Keystrokes.pickle', '')
+    arff.dump(Raw_Mobikey_pickle_path + '/' + arff_name + '.arff',
+              res.values,
+              relation=arff_name,
+              names=res.columns)
+
+
+def generate_SecondOrderFeatures_datasets(pickle_index):
+    # Load All data dataset
+    arff_names = ['Mobikey_all_Easy.arff', 'Mobikey_all_Logicalstrong.arff', 'Mobikey_all_Strong.arff']
+
+    all_data = get_df_from_arff(Raw_Mobikey_pickle_path + '/' + arff_names[pickle_index])
+    # keep SOF only features
+    SOF_data = all_data.filter(to_keep_for_SOF_datasets, axis=1)
+    print(SOF_data)
+
+    arff_name = (pickle_names[pickle_index].replace('rawData', 'Mobikey')).replace('data_', '').replace(
+        '_Keystrokes.pickle', '').replace('all', 'secondorder')
+    arff.dump(Raw_Mobikey_pickle_path + '/' + arff_name + '.arff',
+              SOF_data.values,
+              relation=arff_name,
+              names=SOF_data.columns)
+
+
+if __name__ == '__main__':
+    print('')
+
+    """ Genera il rawData_Keystrokes.pickle unendo tutti i file csv dei raw data"""
+    # raw_data_to_pickle(Raw_Mobikey_path, Raw_Mobikey_pickle_path)
+    # raw_data = pd.read_pickle(Raw_Mobikey_pickle_path + '/' + 'rawData_Keystrokes.pickle')
+    # print(raw_data)
+
+    #################################################################################àààà
+
+    """ Divide il raw_data.pickele in un pickle per ogni password (Easy/Logicalstrong/Strong)"""
+    split_raw_data_for_passwords()
+
+    #################################################################################àààà
+
+    """ Estrae le feature e genera un Arff per ogni dataset.pickle indicandone l'indice 'pickle_index'"""
+    # seleziona il file pickle da utilizzare cambiando il valore di pickle_index (0-1-2)
+    pickle_index = 2  # 0 - 1 - 2
+
+    """ FirstOrderFeatures + SecondOrderFeatures datasets extraction"""
+    # generate_AllFeatures_datasets(pickle_index, cols_extracted)
+
+    """ SecondOrderFeatures datasets extraction. NB: i dataset 'All' devono essere già estratti"""
+    # generate_SecondOrderFeatures_datasets(pickle_index)
 
 # 124,108,116,108,99,114,108,104,90,111,116,127,100,66,96,
 # 265,296,293,143,329,322,320,223,201,281,128,162,484,77,
@@ -399,7 +449,7 @@ if __name__ == '__main__':
 # -0.031504,
 # 4.81867,
 # 8.516545,
-# velocity #        1.490264,
-# totaltime #       3620,
-# totaldistance #   279.761043,
+# 1.490264,
+# 3620,
+# 279.761043,
 # 600
