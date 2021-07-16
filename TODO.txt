@@ -1,3 +1,0 @@
-1 - Shallow e Deep su Touchanalytics
-2 - Deep con diverse conf di nodi
-3 - Altri dataset con Shallow e Deep (Keystroke o Swipe)
