@@ -53,11 +53,11 @@ tensorflow~=1.15.0
 
 ## Quick Start
 
-1 - Install requirements with: pip install -r requirements.txt <br>
-2 - Open src/"Dataset Name"/ execute:<br>
-    - NN_"Dataset Name".py for Neural Network test<br>
-    - RF_Knn_SVM_"Dataset Name".py for Shellow learning test<br>
-NB: Internet Connection is required to install dependencies
+1 Install requirements with: pip install -r requirements.txt <br>
+2 Open src/"Dataset Name"/ execute:<br>
+→ NN_"Dataset Name".py for Neural Network test<br>
+→ RF_Knn_SVM_"Dataset Name".py for Shellow learning test<br>
+- NB: Internet Connection is required to install dependencies
 
 </li>
 <li>
@@ -109,12 +109,11 @@ NB: Internet Connection is required to install dependencies
     </p>
 </li>
 
-</li>
 <li>
 
 ## Instructions
 
-Custom settings for testing
+#### Custom settings for testing
 - Parameters for: **Neural Networks**:
 ```
     EPOCHS = 10
@@ -137,8 +136,14 @@ Custom settings for testing
     randomization = "sqrt"      # ["sqrt", "log2"]
     bootstrap = 0.5             # [0.5, 0.6, 0.7, 0.8, 0.9]
  ```
-Execute the ".py" to lunch the test
+→ Execute the ".py" to lunch the test
 
+#### Datset contains Feature_extractor script <br>
+- TouchAnalytics (Matlab script: "extractFeaturesFIX.m" ) <br>
+- The Mobikey (Python Script: "Mobikey_feature_extractor.py") <br>
+- BioIdent (Python Script: "BioIdent_feature_extractor.py") <br>
+- WekaArff (No script. Extracted from Original Paper) <br>
+- DG150 (Python Scritp (Not Used in this test): "DG150_feature_extractor_(non_usato).py") <br>
 </li>
 <li>
 
