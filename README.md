@@ -20,7 +20,7 @@
 **TouchDynamics** is project developed for a "Biometric systems" exam 
 at **Aldo Moro University** of Taranto Italy. <br>
 its goal is to replicate and test best and most popular classifiers on State of Art datasets. 
-It is tested on 4 different datasets, 2 are datasets of Keystrokes, 2 are datasets od swipes. <br>
+It is tested on 4 different datasets, 2 are datasets of Keystrokes, 2 are datasets of swipes. <br>
 1 - TouchAnalytics [58] (Swipes) <br>
 2 - BioIdent [70]   (Swipes) <br>
 3 - The Mobikey [31]    (Keystrokes) <br>
@@ -138,12 +138,12 @@ tensorflow~=1.15.0
  ```
 → Execute the ".py" to lunch the test
 
-#### Datset contains Feature_extractor script <br>
+#### Almost each dataset contains a 'Feature_extractor script' to obtain features from raw_data <br>
 - TouchAnalytics (Matlab script: "extractFeaturesFIX.m" ) <br>
 - The Mobikey (Python Script: "Mobikey_feature_extractor.py") <br>
 - BioIdent (Python Script: "BioIdent_feature_extractor.py") <br>
-- WekaArff (No script. Extracted from Original Paper) <br>
-- DG150 (Python Scritp (Not Used in this test): "DG150_feature_extractor_(non_usato).py") <br>
+- WekaArff (No Script. Extracted from Original Paper) <br>
+- DG150 (Python Script (Not Used): "DG150_feature_extractor_(non_usato).py") <br>
 </li>
 <li>
 
